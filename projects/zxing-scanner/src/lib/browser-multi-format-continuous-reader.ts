@@ -24,6 +24,31 @@ export class BrowserMultiFormatContinuousReader extends BrowserMultiFormatReader
     return this.scannerControls;
   }
 
+  async decodeFromVideoDevice(
+    deviceId: string | undefined,
+    previewElem: string | HTMLVideoElement | undefined,
+    callbackFn: any,
+  ): Promise<IScannerControls> {
+
+    let videoConstraints: MediaTrackConstraints;
+
+    if (!deviceId) {
+      videoConstraints = { facingMode: 'environment' };
+    } else {
+      videoConstraints = {
+        deviceId: { exact: deviceId },
+        width: { min: 640, ideal: 1920 },
+        height: { min: 400, ideal: 1080 },
+        aspectRatio: { ideal: 1.7777777778 }
+      };
+    }
+
+    const constraints: MediaStreamConstraints = { video: videoConstraints };
+
+    return await this.decodeFromConstraints(constraints, previewElem, callbackFn);
+  };
+
+
   /**
    * Starts the decoding from the current or a new video element.
    *
@@ -54,7 +79,7 @@ export class BrowserMultiFormatContinuousReader extends BrowserMultiFormatReader
           errorName === NotFoundException.name ||
           // scan Error - found the QR but got error on decoding
           errorName === ChecksumException.name ||
-          errorName === FormatException.name || 
+          errorName === FormatException.name ||
           error.message.includes('No MultiFormat Readers were able to detect the code.')
         ) {
           scan$.next({ error });
