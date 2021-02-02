@@ -46,7 +46,7 @@ export class BrowserMultiFormatContinuousReader extends BrowserMultiFormatReader
     const constraints: MediaStreamConstraints = { video: videoConstraints };
 
     return await this.decodeFromConstraints(constraints, previewElem, callbackFn);
-  };
+  }
 
 
   /**
@@ -61,7 +61,7 @@ export class BrowserMultiFormatContinuousReader extends BrowserMultiFormatReader
   ): Promise<Observable<ResultAndError>> {
 
     const scan$ = new BehaviorSubject<ResultAndError>({});
-    let ctrls
+    let ctrls;
 
     try {
       ctrls = await this.decodeFromVideoDevice(deviceId, previewEl, (result, error) => {
